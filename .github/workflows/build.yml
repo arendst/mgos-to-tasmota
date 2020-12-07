@@ -24,9 +24,9 @@ jobs:
     needs: release
     strategy:
       matrix:
-        hwModel:    [Shelly1, Shelly1PM, ShellyPlugS, Shelly2, Shelly25, ShellyRGBW2, ShellyDimmer1, ShellyDimmer2, ShellyEM, ShellyBulb, ShellyVintage, ShellyPlugUS, ShellyHT, ShellyBulbDuo, ShellyI3]
+        hwModel:    [Shelly1, Shelly1L, Shelly1PM, ShellyPlugS, Shelly2, Shelly25, ShellyRGBW2, ShellyDimmer1, ShellyDimmer2, ShellyEM, ShellyBulb, ShellyVintage, ShellyPlugUS, ShellyHT, ShellyBulbDuo, ShellyI3]
         hwPlatform: [esp8266]
-        targetFw:   [tasmota, haa, espurna]
+        targetFw:   [tasmota]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -49,7 +49,3 @@ jobs:
         asset_path: ./build/fw.zip
         asset_name: mg2${{ matrix.targetFw }}-${{ matrix.hwModel }}.zip
         asset_content_type: application/zip
-    - name: Upload to CF KV Store
-      uses: wei/curl@master
-      with:
-        args: "-X PUT 'https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/storage/kv/namespaces/${{ secrets.CF_KV_NAMESPACE_ID }}/values/firmware/mg2${{ matrix.targetFw }}-${{ matrix.hwModel }}.zip' -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}' --data-binary '@./build/fw.zip'"
